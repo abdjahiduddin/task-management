@@ -57,7 +57,18 @@ export class TasksService {
   }
 
   deleteTaskById(id: string): void {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
+    let isNotExists = true;
+    this.tasks = this.tasks.filter((task) => {
+      if (task.id === id) {
+        isNotExists = false;
+        return false;
+      }
+      return true;
+    });
+
+    if (isNotExists) {
+      throw new NotFoundException(`Task with id '${id}' not found`);
+    }
   }
 
   updateTaskStatus(id: string, status: TaskStatus): Task {
