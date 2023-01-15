@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import { Task } from './task.entity';
 import { TaskStatus } from './task-status.enum';
 import { CreateTaskDto } from './dto/create-task.dto';
+import { GetTaskFilterDto } from './dto/get-task-filter.dto';
 
 export class TasksRepository extends Repository<Task> {
   constructor(
@@ -14,6 +15,27 @@ export class TasksRepository extends Repository<Task> {
       taskRepository.manager,
       taskRepository.queryRunner,
     );
+  }
+
+  async getTasks(filterDto: GetTaskFilterDto): Promise<Task[]> {
+    const { status, search } = filterDto;
+    const query = this.createQueryBuilder('task');
+
+    if (search) {
+      console.log(search);
+      query.andWhere(
+        '(task.title ILIKE :search OR task.description ILIKE :search)',
+        { search: `%${search}%` },
+      );
+    }
+
+    if (status) {
+      console.log(status);
+      query.andWhere('task.status = :status', { status: status });
+    }
+
+    const tasks = query.getMany();
+    return tasks;
   }
 
   async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
