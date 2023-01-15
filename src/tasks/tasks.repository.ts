@@ -22,7 +22,6 @@ export class TasksRepository extends Repository<Task> {
     const query = this.createQueryBuilder('task');
 
     if (search) {
-      console.log(search);
       query.andWhere(
         '(task.title ILIKE :search OR task.description ILIKE :search)',
         { search: `%${search}%` },
@@ -30,7 +29,6 @@ export class TasksRepository extends Repository<Task> {
     }
 
     if (status) {
-      console.log(status);
       query.andWhere('task.status = :status', { status: status });
     }
 
