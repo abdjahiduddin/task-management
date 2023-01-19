@@ -12,10 +12,10 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
 
   const configService = app.get(ConfigService);
-  const port = configService.get<number>('PORT');
-  const env = configService.get<string>('ENV');
+  const port = configService.get('HOST_PORT');
+  const env = process.env.STAGE;
 
-  await app.listen(3000);
+  await app.listen(port);
   logger.log(`${env}, Application listening on port ${port}`);
 }
 bootstrap();
